@@ -1,19 +1,30 @@
 package lifegame;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class Grille {
 
-    private List<Cellule> cellules;
+    private List<Cellule> cellulesVivantes;
 
-    public Grille(Grille grille) {
+    public Grille(List<Cellule> cellulesVivantes) {
+        this.cellulesVivantes = cellulesVivantes;
     }
 
-    public List<Cellule> getCellules() {
-        return cellules;
+    public Grille(Grille grilleInitiale) {
+        List<Cellule> cellulesInitales = grilleInitiale.getCellulesVivantes();
+
+        this.cellulesVivantes = cellulesInitales.stream()
+                .filter(cellule -> {
+                    long nbCellules = cellulesInitales.stream()
+                            .filter(celluleInitale -> celluleInitale.aEstCoté(cellule.getX(), cellule.getY()))
+                            .count();
+                    return nbCellules >= 3L && nbCellules < 5L;
+                })
+                .collect(Collectors.toList());
     }
 
-    public void setCellules(List<Cellule> cellules) {
-        this.cellules = cellules;
+    public List<Cellule> getCellulesVivantes() {
+        return this.cellulesVivantes;
     }
 }
